@@ -1,7 +1,10 @@
 #!/bin/sh -e
-# Update resolv.conf: Replace nameserver with dnsmasq dock
-cp /etc/resolv.conf /etc/resolv.conf.bak
-grep -v nameserver /etc/resolv.conf.bak > /etc/resolv.conf
-grep dnsmasq /etc/hosts | awk '{ print "nameserver "$1}' >> /etc/resolv.conf
-
+DNS_IP=`env | grep "53_UDP_ADDR" | grep -v "KUBERNETES_PORT" | cut -d"=" -f 2`
+if [ ! -z $DNS_IP ];
+then
+    # Update resolv.conf: Replace nameserver with dnsmasq dock
+    cp /etc/resolv.conf /etc/resolv.conf.bak
+    grep -v nameserver /etc/resolv.conf.bak > /etc/resolv.conf
+    echo "nameserver $DNS_IP" >> /etc/resolv.conf
+fi
 exit 0
