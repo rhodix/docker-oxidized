@@ -1,0 +1,7 @@
+#!/bin/sh -e
+# Update resolv.conf: Replace nameserver with dnsmasq dock
+cp /etc/resolv.conf /etc/resolv.conf.bak
+grep -v nameserver /etc/resolv.conf.bak > /etc/resolv.conf
+grep dnsmasq /etc/hosts | awk '{ print "nameserver "$1}' >> /etc/resolv.conf
+
+exit 0
